@@ -123,11 +123,12 @@ export const reducer = (state = { currentScreen: 'login',logged: false, events: 
         loading: true,
       };
     case 'GET_EVENT_RECEIVED':
+      var events = action.data;
       return {
         ...state, 
         currentScreen: 'events',
         loading: false,
-        events: action.data,
+        events: events
       };
     case 'GET_EVENT_ERROR':
       console.log(state);
