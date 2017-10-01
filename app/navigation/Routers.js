@@ -7,7 +7,8 @@ import Colors from '../constants/Colors';
 
 import LoginScreen from '../screens/LoginScreen';
 import EventListScreen from  '../screens/EventListScreen';
-import AppointmentScreen from  '../screens/AppointmentScreen';
+import EventMapScreen from  '../screens/EventMapScreen';
+import EventScreen from  '../screens/EventScreen';
 import ElementListScreen from  '../screens/ElementListScreen';
 import ElementScreen from  '../screens/ElementScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -41,17 +42,33 @@ export const SelectItemStack = StackNavigator({
   },
 });
 
-export const AppointmentStack = StackNavigator({
+
+export const EventMapStack = StackNavigator({
+  EventList: {
+    screen: EventMapScreen,
+    navigationOptions: {
+      title: 'Event Map',
+    },
+  },
+  Event: {
+    screen: EventScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Event',
+    }),
+  },
+});
+
+export const EventListStack = StackNavigator({
   EventList: {
     screen: EventListScreen,
     navigationOptions: {
-      title: 'Events',
+      title: 'Event List',
     },
   },
-  Appointment: {
-    screen: AppointmentScreen,
+  Event: {
+    screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
-      title: 'Apointment',
+      title: 'Event',
     }),
   },
 });
@@ -74,10 +91,10 @@ export const ElementStack = StackNavigator({
 export const MainScreenStack = TabNavigator(
   {
     Home: {
-      screen: AppointmentStack,
+      screen: EventMapStack,
     },
     Links: {
-      screen: ElementStack,
+      screen: EventListStack,
     },
     Settings: {
       screen: ElementStack,
