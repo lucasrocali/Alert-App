@@ -17,8 +17,11 @@ const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumA
 )
 
 export default class EventMap extends React.Component {
+  showEvent = (event) => {
+    console.log('showEvent');
+    this.props.navigation.navigate('Event', { ...event });
+  };
   state = {
-    mapRegion: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
     locationResult: null,
     location: {coords: { latitude: 37.78825, longitude: -122.4324}},
   };
@@ -30,7 +33,6 @@ export default class EventMap extends React.Component {
 
   _handleMapRegionChange = mapRegion => {
     console.log("_handleMapRegionChange ");
-    //this.setState({ mapRegion });
   };
 
   _getLocationAsync = async () => {
@@ -56,6 +58,7 @@ export default class EventMap extends React.Component {
     this.setState({location, region})
   }
   render() {
+    console.log('Event Map');
     console.log(this.props);
     const { events, loading, refresh } = this.props;
     return (
@@ -64,17 +67,14 @@ export default class EventMap extends React.Component {
           region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
           onRegionChange={this._handleMapRegionChange}
         >
-          <MapView.Marker
-            coordinate={this.state.location.coords}
-            title="My Marker"
-            description="Some description"
-          />
          
-         {events && events.map((event, index) => 
+         {events && events.map((event) => 
              <MapView.Marker
+              key={event.id}
               coordinate= { { latitude: event.location.lat, longitude: event.location.lon } }
               title= { event.category.name }
               description="Some description"
+              onPress={() => this.showEvent(event)}
             />
           )}
         </MapView>

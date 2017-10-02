@@ -37,7 +37,7 @@ export default class LoginScreen extends Component {
   handleLoginPress = () => {
     console.log('Login');
     console.log(this.state);
-    store.dispatch({type: 'LOGIN',email: this.state.email,password: this.state.password});
+    store.dispatch({type: 'LOGIN', email: this.state.email, password: this.state.password});
     //this.props.navigation.navigate('Main');
   };
   componentDidUpdate() {
@@ -54,7 +54,7 @@ export default class LoginScreen extends Component {
   }
   componentDidMount() {
     //DEBUG ONLY
-    store.dispatch({type: 'LOGIN'});
+    // store.dispatch({type: 'LOGIN'});
   }
 
   render() {

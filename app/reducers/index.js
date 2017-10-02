@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native'
 // const API = 'https://rocali-alert-api.herokuapp.com/';
 // const APIToken = "JRHApPRyt4CnTTyUUHzC"
 
-const API = 'http://localhost:3000';
+const API = 'http://192.168.1.39:3000';
 const APIToken = "Me4brAzf2yzxzhHTtDs2"
 
 token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozMiwiZXhwIjoxNTA2OTc4NTk2fQ.hgvljMS7MDNSuPk8KeqoauZ1B7UPotMrzlI2f7wo_7A';
@@ -54,7 +54,7 @@ export const apiMiddleware = store => next => action => {
       fetch(`${API}/events`, {
         method: 'GET',
         headers: {
-          'Accept': 'application/vnd.todos.v1+json',
+          'Accept': 'application/alert.v1+json',
           'Authorization': token
         }}).then(response => response.json())
         .then(data => next({
@@ -66,20 +66,53 @@ export const apiMiddleware = store => next => action => {
           error
         }));
       break;
-    case 'GET_ELEMENTS':
-      store.dispatch({type: 'GET_ELEMENT_LOADING'});
-      fetch(`${API}/elements`, {
+    case 'GET_CATEGORIES':
+      store.dispatch({type: 'GET_CATEGORY_LOADING'});
+      fetch(`${API}/categories`, {
         method: 'GET',
         headers: {
-          'Accept': 'application/vnd.todos.v1+json',
+          'Accept': 'application/alert.v1+json',
           'Authorization': token
         }}).then(response => response.json())
         .then(data => next({
-          type: 'GET_ELEMENT_RECEIVED',
+          type: 'GET_CATEGORY_RECEIVED',
           data
         }))
         .catch(error => next({
-          type: 'GET_ELEMENT_ERROR',
+          type: 'GET_CATEGORY_ERROR',
+          error
+        }));
+      break;
+    case 'CREATE_EVENT':
+      store.dispatch({type: 'CREATE_EVENT_LOADING'});
+
+      console.log("CREATE_EVENT");
+      console.log(action);
+
+      lat = action.lat;
+      lon = action.lon;
+      category_id = action.category.id;
+
+
+      fetch(`${API}/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/alert.v1+json',
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          lat: lat,
+          lon: lon,
+          category_id: category_id,
+          importance: 1
+        })}).then(response => response.json())
+        .then(data => next({
+          type: 'CREATE_EVENT_RESPONSE',
+          data
+        }))
+        .catch(error => next({
+          type: 'CREATE_EVENT_ERROR',
           error
         }));
       break;
@@ -88,7 +121,16 @@ export const apiMiddleware = store => next => action => {
   }
 };
 
-export const reducer = (state = { currentScreen: 'login',logged: false, events: [],elements: [], loading: true }, action) => {
+// const initialState = { 
+//   currentScreen: 'login',
+//   logged: false, 
+//   events: [],
+//   categories: [], 
+//   loading: true,
+//   create_event: { lat:null, lon:null, category: null } 
+// };
+
+export const reducer = (state = {}, action) => {
   console.log('reducer');
   // console.log(action);
   // console.log(action.data);
@@ -96,6 +138,7 @@ export const reducer = (state = { currentScreen: 'login',logged: false, events: 
   switch (action.type) {
     case 'LOGIN_LOADING':
       return{ 
+        ...state, 
         currentScreen: 'login',
         loading: true,
       }
@@ -123,32 +166,70 @@ export const reducer = (state = { currentScreen: 'login',logged: false, events: 
         loading: true,
       };
     case 'GET_EVENT_RECEIVED':
-      var events = action.data;
       return {
         ...state, 
         currentScreen: 'events',
         loading: false,
-        events: events
+        events: action.data
       };
     case 'GET_EVENT_ERROR':
       console.log(state);
       return state;
-    case 'GET_ELEMENT_LOADING':
+    case 'GET_CATEGORY_LOADING':
       return {
         ...state, 
-        currentScreen: 'elements',
+        currentScreen: 'categories',
         loading: true,
       };
-    case 'GET_ELEMENT_RECEIVED':
+    case 'GET_CATEGORY_RECEIVED':
       return {
         ...state, 
-        currentScreen: 'elements',
+        currentScreen: 'categories',
         loading: false,
-        elements: action.data,
+        categories: action.data,
       };
-    case 'GET_ELEMENT_ERROR':
+    case 'GET_CATEGORY_ERROR':
       console.log(state);
       return state;
+    // case 'SELECTED_CATEGORY':
+    //   console.log('SELECTED_CATEGORY');
+    //   return {
+    //     ...state,
+    //     create_event: {
+    //       ...state.create_event,
+    //       category: action.category
+    //     }
+    //   };
+    // case 'SET_USER_LOCATION':
+    //   console.log('SET_USER_LOCATION');
+    //   return {
+    //     ...state,
+    //     create_event: {
+    //       ...state.create_event,
+    //       lat: action.lat,
+    //       lon: action.lon
+    //     }
+    //   };
+    case 'CREATE_EVENT_LOADING':
+      return{ 
+        ...state, 
+        currentScreen: 'event',
+        loading: true,
+      }
+    case 'CREATE_EVENT_RESPONSE':
+      message = action.data.message;
+      return {
+        ...state, 
+        currentScreen: 'event',
+        loading: false,
+        message: message
+      };
+    case 'CREATE_EVENT_ERROR':
+      return{
+        ...state, 
+        currentScreen: 'event',
+        loading: false,
+      }
     default:
       return state;
     }

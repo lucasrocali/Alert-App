@@ -33,11 +33,22 @@ import SelectItemScreen from  '../screens/SelectItemScreen';
 // );
 
 
+export const AddEventStack = StackNavigator({
+  AddEvent: {
+    screen: EventScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'AddEvent',
+      gesturesEnabled: false,
+    }),
+  },
+});
+
 export const SelectItemStack = StackNavigator({
   SelectItem: {
     screen: SelectItemScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'SelectItem',
+      gesturesEnabled: false,
     }),
   },
 });
@@ -48,12 +59,14 @@ export const EventMapStack = StackNavigator({
     screen: EventMapScreen,
     navigationOptions: {
       title: 'Event Map',
+      gesturesEnabled: false,
     },
   },
   Event: {
     screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Event',
+      gesturesEnabled: false,
     }),
   },
 });
@@ -63,12 +76,14 @@ export const EventListStack = StackNavigator({
     screen: EventListScreen,
     navigationOptions: {
       title: 'Event List',
+      gesturesEnabled: false,
     },
   },
   Event: {
     screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Event',
+      gesturesEnabled: false,
     }),
   },
 });
@@ -78,12 +93,14 @@ export const ElementStack = StackNavigator({
     screen: ElementListScreen,
     navigationOptions: {
       title: 'Elements',
+      gesturesEnabled: false,
     },
   },
   Element: {
     screen: ElementScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Element',
+      gesturesEnabled: false,
     }),
   },
 });
@@ -91,13 +108,13 @@ export const ElementStack = StackNavigator({
 export const MainScreenStack = TabNavigator(
   {
     Home: {
-      screen: EventMapStack,
+      screen: EventMapStack ,
     },
     Links: {
       screen: EventListStack,
     },
     Settings: {
-      screen: ElementStack,
+      screen: AddEventStack,
     },
   },
   {
@@ -135,6 +152,7 @@ export const MainScreenStack = TabNavigator(
     tabBarPosition: 'bottom',
     animationEnabled: false,
     swipeEnabled: false,
+    gesturesEnabled: false,
   }
 );
 
