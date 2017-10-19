@@ -14,60 +14,52 @@ import { connect } from 'react-redux';
 
 import store from '../store'
 
-// const background = require("./../assets/images/login_bg.png");
-// const mark = require("./../assets/icons/login_mark.png");
-const lockIcon = require("./../assets/icons/login_lock.png");
-const personIcon = require("./../assets/icons/login_person.png");
-
 @connect(
   state => ({
-    email: '',
-    password: '',
     currentScreen: state.currentScreen,
-    logged: state.logged,
+    success: state.success,
     loading: state.loading,
     message: state.message
   })
 )
-export default class LoginScreen extends Component {
+export default class SignupScreen extends Component {
   constructor(props, context){
     super(props, context);
     this.state = {
+      name: "",
       email: "",
-      password: ""
+      password: "",
+      password_confirmation: ""
     };
   }
-  handleLoginPress = () => {
-    console.log('Login');
-    console.log(this.state);
-    store.dispatch({type: 'LOGIN', email: this.state.email, password: this.state.password});
-    //this.props.navigation.navigate('Main');
-  };
   handleSignupPress = () => {
-    this.props.navigation.navigate('Signup');
+    if (this.state.name != "" && this.state.email != "" && this.state.password != "" && this.state.password_confirmation != "") {
+      store.dispatch({type: 'SIGNUP', name: this.state.name , email: this.state.email, password: this.state.password, password_confirmation: this.state.password_confirmation});
+    }
+  };
+  handleBackPress = () => {
+    this.props.navigation.goBack(null);
   };
   componentDidUpdate() {
-    console.log("componentDidUpdate");
-    console.log(this.props);
-    const { logged, message, currentScreen } = this.props;
+    // console.log("componentDidUpdate");
+    // console.log(this.props);
+    const { success, currentScreen } = this.props;
     //DEBUG ONLY
-    if (logged && currentScreen == 'login') {
+    if (success && currentScreen == 'signup') {
+      this.props.navigation.goBack(null);
       this.props.navigation.navigate('Main');
-    }
-    if (message && !logged) {
-      console.log('MSG ON LOGIN SCREEN '+message);
     }
   }
 
   render() {
     console.log('LoginScreen');
-    const { logged, loading, message } = this.props;
+    const { success, loading, message } = this.props;
     console.log('render');
     console.log(this.props);
     return (
       <View style={styles.container}>
         <StatusBarAlert
-            visible={message != null && logged == false}
+            visible={message != null && success == false}
             message= { message}
             backgroundColor="#3CC29E"
             color="white"
@@ -77,6 +69,14 @@ export default class LoginScreen extends Component {
               <Image style={styles.mark} resizeMode="contain" />
             </View>
             <View style={styles.wrapper}>
+              <View style={styles.inputWrap}>
+                <TextInput 
+                  placeholder="Name" 
+                  placeholderTextColor="#333"
+                  style={styles.input} 
+                  onChangeText={(text) => this.setState({name:text})}
+                />
+              </View>
               <View style={styles.inputWrap}>
                 <TextInput 
                   placeholder="Email" 
@@ -94,26 +94,25 @@ export default class LoginScreen extends Component {
                   onChangeText={(text) => this.setState({password:text})}
                 />
               </View>
-              <TouchableOpacity activeOpacity={.5}>
-                <View>
-                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={.5} onPress={this.handleLoginPress}>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>{!loading? 'Sign In' : 'Loading'}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.container}>
-              <View style={styles.signupWrap}>
-                <Text style={styles.accountText}>Don't have an account?</Text>
-                <TouchableOpacity activeOpacity={.5} onPress={this.handleSignupPress}>
-                  <View>
-                    <Text style={styles.signupLinkText}>Sign Up</Text>
-                  </View>
-                </TouchableOpacity>
+              <View style={styles.inputWrap}>
+                <TextInput 
+                  placeholderTextColor="#333"
+                  placeholder="Password Confirmation" 
+                  style={styles.input} 
+                  secureTextEntry 
+                  onChangeText={(text) => this.setState({password_confirmation:text})}
+                />
               </View>
+              <TouchableOpacity activeOpacity={.5} onPress={this.handleSignupPress}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>{!loading? 'Sign Up' : 'Loading'}</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={.5} onPress={this.handleBackPress}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>{'Back'}</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>

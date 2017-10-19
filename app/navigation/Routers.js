@@ -6,13 +6,13 @@ import { StackNavigator, TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
 
 import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
 import EventListScreen from  '../screens/EventListScreen';
 import EventMapScreen from  '../screens/EventMapScreen';
 import EventScreen from  '../screens/EventScreen';
-import ElementListScreen from  '../screens/ElementListScreen';
-import ElementScreen from  '../screens/ElementScreen';
-import HomeScreen from '../screens/HomeScreen';
-import SelectItemScreen from  '../screens/SelectItemScreen';
+import SelectCategoryScreen from  '../screens/SelectCategoryScreen';
+import SelectTagsScreen from  '../screens/SelectTagsScreen';
+import PerfilScreen from '../screens/PerfilScreen';
 
 // const RootStackNavigator = StackNavigator(
 //   {
@@ -31,6 +31,35 @@ import SelectItemScreen from  '../screens/SelectItemScreen';
 //     }),
 //   }
 // );
+export const SignupStack = StackNavigator({
+  Signup: {
+    screen: SignupScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Signup',
+      //gesturesEnabled: false,
+    }),
+  },
+});
+
+export const LoginStack = StackNavigator({
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Login',
+      //gesturesEnabled: false,
+    }),
+  },
+});
+
+export const PerfilStack = StackNavigator({
+  Perfil: {
+    screen: PerfilScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Perfil',
+      //gesturesEnabled: false,
+    }),
+  },
+});
 
 
 export const AddEventStack = StackNavigator({
@@ -38,35 +67,44 @@ export const AddEventStack = StackNavigator({
     screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'AddEvent',
-      gesturesEnabled: false,
+      //gesturesEnabled: false,
     }),
   },
 });
 
-export const SelectItemStack = StackNavigator({
-  SelectItem: {
-    screen: SelectItemScreen,
+export const SelectCategoryStack = StackNavigator({
+  SelectCategory: {
+    screen: SelectCategoryScreen,
     navigationOptions: ({ navigation }) => ({
-      title: 'SelectItem',
-      gesturesEnabled: false,
+      title: 'Select Category',
+      //gesturesEnabled: false,
     }),
   },
 });
 
+export const SelectTagsStack = StackNavigator({
+  SelectTags: {
+    screen: SelectTagsScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Select Tags',
+      //gesturesEnabled: false,
+    }),
+  },
+});
 
 export const EventMapStack = StackNavigator({
   EventList: {
     screen: EventMapScreen,
     navigationOptions: {
       title: 'Event Map',
-      gesturesEnabled: false,
+      //gesturesEnabled: false,
     },
   },
   Event: {
     screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Event',
-      gesturesEnabled: false,
+      //gesturesEnabled: false,
     }),
   },
 });
@@ -76,46 +114,33 @@ export const EventListStack = StackNavigator({
     screen: EventListScreen,
     navigationOptions: {
       title: 'Event List',
-      gesturesEnabled: false,
+      //gesturesEnabled: false,
     },
   },
   Event: {
     screen: EventScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Event',
-      gesturesEnabled: false,
+      //gesturesEnabled: false,
     }),
   },
 });
 
-export const ElementStack = StackNavigator({
-  ElementList: {
-    screen: ElementListScreen,
-    navigationOptions: {
-      title: 'Elements',
-      gesturesEnabled: false,
-    },
-  },
-  Element: {
-    screen: ElementScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Element',
-      gesturesEnabled: false,
-    }),
-  },
-});
 
 export const MainScreenStack = TabNavigator(
   {
     Home: {
-      screen: EventMapStack ,
+      screen: EventMapStack
     },
     Links: {
-      screen: EventListStack,
+      screen: EventListStack
     },
     Settings: {
-      screen: AddEventStack,
+      screen: AddEventStack
     },
+    Perfil: {
+      screen: PerfilStack
+    }
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -137,6 +162,10 @@ export const MainScreenStack = TabNavigator(
             iconName = Platform.OS === 'ios'
               ? `ios-options${focused ? '' : '-outline'}`
               : 'md-options';
+          case 'Perfil':
+            iconName = Platform.OS === 'ios'
+              ? `ios-options${focused ? '' : '-outline'}`
+              : 'md-options';
         }
         return (
           <Ionicons
@@ -152,23 +181,27 @@ export const MainScreenStack = TabNavigator(
     tabBarPosition: 'bottom',
     animationEnabled: false,
     swipeEnabled: false,
-    gesturesEnabled: false,
+    //gesturesEnabled: false,
   }
 );
 
 
 export const Root = StackNavigator({
   Login: {
-    screen: LoginScreen,
+    screen: LoginStack,
+  },
+  Signup: {
+    screen: SignupStack,
   },
   Main: {
     screen: MainScreenStack,
   },
-  SelectItem: {
-    screen: SelectItemStack,
+  SelectCategory: {
+    screen: SelectCategoryStack,
   },
-  
-  
+  SelectTags: {
+    screen: SelectTagsStack,
+  },
 }, {
   mode: 'modal',
   headerMode: 'none',

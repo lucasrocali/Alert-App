@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, View, StyleSheet, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, View, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Dimensions } from 'react-native';
 import { Constants, MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import StatusBarAlert from 'react-native-statusbar-alert';
@@ -20,7 +20,8 @@ export default class App extends Component {
     locationResult: null,
     location: {coords: { latitude: 37.78825, longitude: -122.4324}},
     inputValue: "Buscar",
-    category: null
+    category: null,
+    tags: [],
   };
 
   componentDidMount() {
@@ -65,13 +66,33 @@ export default class App extends Component {
     );
   };
   
-  _handleDoneButtonPress = () => {
-    store.dispatch({type: 'CREATE_EVENT', lat: this.state.location.coords.latitude, lon: this.state.location.coords.longitude, category: this.state.category });
-    // store.dispatch({type: 'SET_USER_LOCATION', lat: this.state.location.coords.latitude, lon: this.state.location.coords.longitude });
+  _handleCreateBtnPress = () => {
+    console.log("_handleCreateBtnPress");
+    if (this.state.category != null){
+      store.dispatch({type: 'CREATE_EVENT', lat: this.state.location.coords.latitude, lon: this.state.location.coords.longitude, category: this.state.category, tags: this.state.tags });
+    }
+    
+  };
+  _handleUpVoteBtnPress = () => {
+    console.log("_handleStrengthVoteBtnPress");
+    const event = this.props.navigation.state.params;
+    store.dispatch({type: 'SET_STRENGTH', event_id: event.id, up_down: 1 });
   };
 
-  returnData(category) {
+  _handleDownVoteBtnPress = () => {
+    console.log("_handleStrengthVoteBtnPress");
+    const event = this.props.navigation.state.params;
+    store.dispatch({type: 'SET_STRENGTH', event_id: event.id, up_down: 0 });
+  };
+
+  returnCategory(category) {
     this.setState({ category: category });
+  }
+
+  returnTags(tags) {
+    console.log('returnTags');
+    console.log(tags);
+    this.setState({ tags: tags});
   }
 
   render() {
@@ -95,9 +116,9 @@ export default class App extends Component {
             style={styles.input}
             onPress={() => {
               if (create) {
-                 console.log('On Select');
+                console.log('On Select Category');
                 console.log(this.props);
-                this.props.navigation.navigate('SelectItem', {returnData: this.returnData.bind(this)});
+                this.props.navigation.navigate('SelectCategory', {returnCategory: this.returnCategory.bind(this)});
               }
             }}> { event ? event.category.name : this.state.category ? this.state.category.name : 'Select Category' } </Text>
           
@@ -142,18 +163,42 @@ export default class App extends Component {
           </MapView>
         
           <Text style={styles.title}> Tags </Text>
-          <Text style={styles.input}> { event ? event.event_tags.toString() : 'Select Tags'} </Text>
+          <Text style={styles.input}
+                onPress={() => {
+                    if (create) {
+                      console.log('On Select Tags');
+                      console.log(this.props);
+                      this.props.navigation.navigate('SelectTags', {returnTags: this.returnTags.bind(this)});
+                    }
+                  }}> { event ? event.event_tags.map(event_tag => event_tag.tag.name).toString() : this.state.tags.length > 0 ? this.state.tags.map(tag => tag.name).toString() : 'Select Tags' } </Text>
 
            { create ? 
           
-            <TouchableOpacity activeOpacity={.5} onPress={this._handleDoneButtonPress}>
+            <TouchableOpacity activeOpacity={.5} onPress={this._handleCreateBtnPress}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>{!loading? 'Create' : 'Loading'}</Text>
               </View>
             </TouchableOpacity>
 
             :
-            null
+            <View>
+              <View style={{flexDirection: 'row', flex: 1}}>
+                <Text style={styles.text}> Up { event.up_count }</Text>
+                <Text style={styles.text}> Down { event.down_count }</Text>
+              </View>
+              <View>
+                <TouchableOpacity activeOpacity={.5} onPress={this._handleUpVoteBtnPress}>
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>{!loading? 'Reforçar' : 'Loading'}</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={.5} onPress={this._handleDownVoteBtnPress}>
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>{!loading? 'Denuciar' : 'Loading'}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
           }
 
         </ScrollView>
@@ -174,7 +219,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: '#34495e',
-     backgroundColor: '#ecf0f1',
+    backgroundColor: '#ecf0f1',
   },
   button: {
     backgroundColor: "#555555",
@@ -193,4 +238,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#34495e',
   },
+  text: {
+    flex:1,
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+  }
 });

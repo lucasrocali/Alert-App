@@ -28,7 +28,7 @@ import store from '../store'
   }),
 )
 
-export default class SelectItemScreen extends Component {
+export default class SelectCategoryScreen extends Component {
    componentWillMount() {
     console.log('componentWillMount');
     store.dispatch({type: 'GET_CATEGORIES'});
@@ -70,7 +70,7 @@ export default class SelectItemScreen extends Component {
                     console.log(this.props);
                     // create_event.category = category;
                     // store.dispatch({type: 'SELECTED_CATEGORY', category: category });
-                    this.props.navigation.state.params.returnData(category);
+                    this.props.navigation.state.params.returnCategory(category);
                     this.props.navigation.goBack(null);
                     // store.dispatch(NavigationActions.back());
                   }}

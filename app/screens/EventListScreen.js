@@ -61,7 +61,8 @@ export default class EventList extends Component {
             <List>
               {events.map((event, index) => <ListItem
                 key={index}
-                title={ event.category.name + ' ' + event.location.lat + ' ' + event.location.lon }
+                title={ event.category.name }
+                subtitle={ event.user_name + ' - ' + event.readable_date}
                 onPress={() => this.showEvent(event)}
               />)}
             </List>
